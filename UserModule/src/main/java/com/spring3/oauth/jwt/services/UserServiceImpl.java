@@ -2,7 +2,6 @@ package com.spring3.oauth.jwt.services;
 
 import com.spring3.oauth.jwt.dtos.SignupRequest;
 import com.spring3.oauth.jwt.dtos.SubAgentListResponse;
-import com.spring3.oauth.jwt.dtos.UserInfoRequest;
 import com.spring3.oauth.jwt.dtos.UserInfoResponse;
 import com.spring3.oauth.jwt.models.UserInfo;
 import com.spring3.oauth.jwt.models.UserRole;
@@ -15,7 +14,6 @@ import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -242,10 +240,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfo getUserByUserName(String userName) {
-        UserInfo userInfo = userRepository.findRolesByUsername(userName);
+    public UserInfo getUserByUserName(String userId) {
+        Optional<UserInfo> userInfo = userRepository.findById(Long.valueOf(userId));
         //UserInfo user = modelMapper.map(userInfo, UserInfoResponse.class);
-        return userInfo;
+        return userInfo.get();
     }
 
     @Override
@@ -309,8 +307,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfo getAgentProfile(String userId) {
-        return userRepository.findAgentProfileByAgentId(Long.valueOf(userId));
+    public Optional<UserInfo> getAgentProfile(String userId) {
+        return userRepository.findById(Long.valueOf(userId));
     }
     @Override
     public Boolean deleteUser(Long userId) {

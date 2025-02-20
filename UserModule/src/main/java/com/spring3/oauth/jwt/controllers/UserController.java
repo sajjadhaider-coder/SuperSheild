@@ -1,11 +1,9 @@
 package com.spring3.oauth.jwt.controllers;
 
-import com.spring3.oauth.jwt.dtos.ApiResponse;
-import com.spring3.oauth.jwt.dtos.SignupRequest;
-import com.spring3.oauth.jwt.dtos.SubAgentListResponse;
-import com.spring3.oauth.jwt.dtos.UserInfoRequest;
+import com.spring3.oauth.jwt.dtos.*;
 import com.spring3.oauth.jwt.exceptions.UserNotFoundException;
 import com.spring3.oauth.jwt.models.UserInfo;
+import com.spring3.oauth.jwt.models.UserRole;
 import com.spring3.oauth.jwt.services.JwtService;
 import com.spring3.oauth.jwt.services.RefreshTokenService;
 import com.spring3.oauth.jwt.services.UserService;
@@ -15,6 +13,7 @@ import io.jsonwebtoken.security.SignatureException;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -72,6 +73,7 @@ public class UserController {
         }
     }
 
+
     @PostMapping("/updateUserProfile")
     public  ResponseEntity<ApiResponse> updateAgentProfile(@RequestBody UserInfo userInfo) {
         int statusCode = 0;
@@ -104,6 +106,30 @@ public class UserController {
             throw new UserNotFoundException("No users found.");
         }
         return new ResponseEntity<>(userResponses, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/getUserDetailById/{userId}")
+    public ResponseEntity<ApiResponse> getUserProfileDetails(@PathVariable String userId) {
+        int statusCode = 0;
+        ApiResponse response = null;
+        String msg = "";
+        try {
+            statusCode = HttpStatus.OK.value();
+            Optional<UserInfo> userInfo = userService.getAgentProfile(userId);
+            statusCode = HttpStatus.OK.value();
+            msg = "SUCCESS";
+            if (userInfo.isEmpty()) {
+                msg = "FAILURE: User Not Found";
+                statusCode = HttpStatus.NOT_FOUND.value();
+            }
+            response = new ApiResponse<>(statusCode, msg, userInfo);
+        } catch(Exception e) {
+
+            statusCode = HttpStatus.UNAUTHORIZED.value();
+            response = new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "FAILURE", null);
+        }
+        return new ResponseEntity<>(response, HttpStatusCode.valueOf(statusCode));
     }
 
     @PostMapping("/assignRole")
@@ -151,10 +177,37 @@ public class UserController {
         return new ApiResponse<>(HttpStatus.OK.value(), "Success", userResponse);
     }
 
-    @Hidden
-    @GetMapping("/getUserRolesByUserName/{username}")
-    public UserInfo getUserByUserName(@PathVariable("username") String userName){
-        return userService.getUserByUserName(userName);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/getUserRolesByUserId/{userId}")
+    public ResponseEntity<ApiResponse> getUserByUserName(@PathVariable("userId") String userId){
+        int statusCode = 0;
+        ApiResponse response = null;
+        UserRolesResponse urs = null;
+        String msg = "";
+        try {
+            statusCode = HttpStatus.OK.value();
+            Optional<UserInfo> userInfo = userService.getAgentProfile(userId);
+            statusCode = HttpStatus.OK.value();
+            msg = "SUCCESS";
+            if (userInfo.isEmpty()) {
+                msg = "FAILURE: User Not Found";
+                statusCode = HttpStatus.NOT_FOUND.value();
+            } else {
+            List<String> roles = new ArrayList<>();
+                for(UserRole role: userInfo.get().getRoles()) {
+                    roles.add(role.getName());
+                }
+                urs = new UserRolesResponse();
+                urs.setUserId(Long.valueOf(userId));
+                urs.setRoles(roles);
+            }
+            response = new ApiResponse<>(statusCode, msg, urs);
+        } catch(Exception e) {
+
+            statusCode = HttpStatus.UNAUTHORIZED.value();
+            response = new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "FAILURE", null);
+        }
+        return new ResponseEntity<>(response, HttpStatusCode.valueOf(statusCode));
     }
 
     @Operation(summary = "Get greeting message", description = "Returns a greeting message")

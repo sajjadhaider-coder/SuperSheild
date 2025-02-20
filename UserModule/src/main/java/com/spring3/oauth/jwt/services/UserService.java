@@ -7,6 +7,7 @@ import com.spring3.oauth.jwt.models.UserInfo;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface UserService {
@@ -28,5 +29,5 @@ public interface UserService {
     UserInfo revokRole(List<String> roleIds, String userId);
 
     Boolean deleteUser(Long userId);
-    UserInfo getAgentProfile(String userId);
+    Optional<UserInfo> getAgentProfile(String userId);
 }

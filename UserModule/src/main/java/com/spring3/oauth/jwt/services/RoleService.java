@@ -8,7 +8,8 @@ import java.util.Optional;
 public interface RoleService {
     UserRole addRole(UserRole userRole);
     List<UserRole> getRoles();
-    Boolean deleteRoleInfo(Long roleId);
 
     Optional<UserRole> getRoleById(Long id);
+
+    Boolean deleteRoleInfo(Long roleId);
 }

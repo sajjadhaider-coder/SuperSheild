@@ -3,6 +3,7 @@ package com.spring3.oauth.jwt.controllers;
 import com.spring3.oauth.jwt.dtos.ApiResponse;
 import com.spring3.oauth.jwt.exceptions.UserNotFoundException;
 import com.spring3.oauth.jwt.models.UserRole;
+import com.spring3.oauth.jwt.repositories.RoleRespository;
 import com.spring3.oauth.jwt.services.RoleService;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,10 @@ public class RoleController {
 
     @Autowired
     RoleService roleService;
+
+    @Autowired
+    RoleRespository roleRespository;
+
     @PostMapping("/addRole")
     public ResponseEntity<ApiResponse> saveRole(@RequestBody UserRole userRole) {
         int statusCode = 0;
@@ -58,22 +63,21 @@ public class RoleController {
         return new ResponseEntity<>(apiResponse, HttpStatusCode.valueOf(statusCode));
     }
 
-    @Hidden
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/deleteRole")
     public ResponseEntity<ApiResponse> deleteRole(@RequestParam Long roleId){
         int statusCode = 0;
         ApiResponse response = null;
-        Boolean isDeleted = roleService.deleteRoleInfo(roleId);
-        if (!isDeleted) {
-            statusCode = HttpStatus.NOT_FOUND.value();
-            response = new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "FAILED", null);
-            throw new UserNotFoundException("User not found.");
-        } else {
+        try {
+            roleRespository.delete(roleRespository.findById(roleId).get());
             statusCode = HttpStatus.OK.value();
             response = new ApiResponse<>(HttpStatus.OK.value(), "Success", null);
+        } catch (Exception e) {
+            statusCode = HttpStatus.UNAUTHORIZED.value();
+            response = new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "FAILED: Please, make sure the role is not assigned to someone", null);
+            //throw new UserNotFoundException("Please, make sure the role is not assigned to someone");
         }
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatusCode.valueOf(statusCode));
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/getRoleById/{id}")
