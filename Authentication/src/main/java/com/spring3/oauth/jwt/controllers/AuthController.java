@@ -42,12 +42,12 @@ public class AuthController {
 
     @Hidden
     @PostMapping("/updateUser")
-    public ResponseEntity<ApiResponse> updateUser(@RequestBody UserInfo userRequest) {
+    public ResponseEntity<ApiResponse> updateUser(@RequestBody UserInfo userRequest, HttpServletRequest httpServletRequest) {
         ApiResponse apiResponse = null;
         int statusCode = 0;
         UserInfo userResponse = null;
         try {
-            userResponse = userService.updateUser(userRequest);
+            userResponse = userService.updateUser(userRequest, httpServletRequest);
             statusCode = HttpStatus.OK.value();
             apiResponse = new ApiResponse(statusCode, "Success", userResponse);
             return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
@@ -80,7 +80,7 @@ public class AuthController {
                 .token(refreshToken.getToken()).build();  // Include refresh token in the response
         UserInfo userInfo = userService.getUserByUserName(authRequestDTO.getUsername());
 
-        userService.updateUser(userInfo);
+        userService.updateUser(userInfo, httpServletRequest);
         // return new ResponseEntity<>(jwtResponse, HttpStatus.OK);  // 200 OK for successful authentication
 
     } else {

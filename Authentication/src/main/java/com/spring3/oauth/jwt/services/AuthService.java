@@ -15,7 +15,7 @@ public interface AuthService {
     List<UserInfo> getAllUser();
      String  returnClientIp(HttpServletRequest request);
 
-    UserInfo updateUser(UserInfo userInfoRequest);
+    UserInfo updateUser(UserInfo userInfoRequest, HttpServletRequest httpServletRequest);
 
     UserInfo getUserByUserName(String userName);
 

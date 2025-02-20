@@ -76,6 +76,15 @@ public class UserController {
     public  ResponseEntity<ApiResponse> updateAgentProfile(@RequestBody UserInfo userInfo) {
         int statusCode = 0;
         ApiResponse response = null;
+
+        String msg = null;
+        if (userInfo.getId() <= 0) {
+            msg = "User ID is invalid";
+            statusCode = HttpStatus.UNAUTHORIZED.value();
+            response = new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "FAILURE: "+msg, null);
+            return new ResponseEntity<>(response, HttpStatusCode.valueOf(statusCode));
+        }
+
         try {
             statusCode = HttpStatus.OK.value();
             UserInfo agentProfile = userService.updateAgentInfo(userInfo);

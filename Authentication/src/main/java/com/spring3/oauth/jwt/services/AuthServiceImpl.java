@@ -124,22 +124,22 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserInfo updateUser(UserInfo userInfo) {
+    public UserInfo updateUser(UserInfo userInfo, HttpServletRequest httpServletRequest) {
 
-        UserInfo checkUser = null;
+        Optional<UserInfo> checkUser = null;
         UserInfo userResponse = null;
         if (userInfo.getId() > 0) {
-            checkUser = (UserInfo) userRepository.findUsersByUserId((int)userInfo.getId());
+            checkUser = userRepository.findById(userInfo.getId());
         }
         if (checkUser != null) {
-            checkUser.setUpdatedAt(LocalDateTime.now());
-            checkUser.setUpdatedBy(userInfo.getUpdatedBy());
+            checkUser.get().setUpdatedAt(LocalDateTime.now());
+            checkUser.get().setUpdatedBy(userInfo.getUpdatedBy());
             //  checkUser.setUserId(userInfo.getId());
-            checkUser.setIpAddress(userInfo.getIpAddress());
-            checkUser.setUserLocation(this.getIPLocation(userInfo.getUserLocation()));
-            checkUser.setUpdatedBy(String.valueOf(userInfo.getId()));
-            checkUser.setDeviceType(userInfo.getDeviceType());
-            checkUser = userRepository.save(checkUser);
+            checkUser.get().setIpAddress(userInfo.getIpAddress());
+            checkUser.get().setUserLocation(this.getIPLocation(userInfo.getUserLocation()));
+            checkUser.get().setUpdatedBy(String.valueOf(userInfo.getId()));
+            checkUser.get().setDeviceType(userInfo.getDeviceType());
+            checkUser = Optional.of(userRepository.save(checkUser.get()));
         } else {
             userInfo = userRepository.save(userInfo);
         }
