@@ -2,10 +2,12 @@ package com.spring3.oauth.jwt.controllers;
 
 import com.spring3.oauth.jwt.dtos.*;
 import com.spring3.oauth.jwt.exceptions.UserNotFoundException;
+import com.spring3.oauth.jwt.models.Softwares;
 import com.spring3.oauth.jwt.models.UserInfo;
 import com.spring3.oauth.jwt.models.UserRole;
 import com.spring3.oauth.jwt.services.JwtService;
 import com.spring3.oauth.jwt.services.RefreshTokenService;
+import com.spring3.oauth.jwt.services.SoftwareService;
 import com.spring3.oauth.jwt.services.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -34,6 +36,8 @@ public class UserController {
     @Autowired
     private UserService userService;
     ModelMapper modelMapper = new ModelMapper();
+    @Autowired
+    SoftwareService softwareService;
     @Autowired
     private JwtService jwtService;
     @Autowired
@@ -107,6 +111,7 @@ public class UserController {
         }
         return new ResponseEntity<>(userResponses, HttpStatus.OK);
     }
+
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/getUserDetailById/{userId}")
@@ -246,6 +251,82 @@ public class UserController {
             throw new RuntimeException("Invalid JWT signature");
         } catch (Exception e) {
             throw new RuntimeException("Invalid JWT token");
+        }
+    }
+
+    // SOFTWARE MANAGEMENT END POINTS WHICH WILL BE MOVED TO THE SEPARATE MODULE LATER
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/addSoftware")
+    public ResponseEntity<ApiResponse> saveSoftware(@RequestBody AddSoftwareRequst addSoftwareRequst) {
+        ApiResponse apiResponse = null;
+        int statusCode = 0;
+        Softwares userResponse = null;
+        try {
+            Softwares softwares = new Softwares(0L, addSoftwareRequst.getSoftwareName(), addSoftwareRequst.getSoftwareURL(), null);
+            userResponse = softwareService.addSoftware(softwares);
+            statusCode = HttpStatus.OK.value();
+            apiResponse = new ApiResponse(statusCode, "Success", userResponse);
+            return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            apiResponse = new ApiResponse(statusCode, "Failed:"+e, userResponse);
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/deleteSoftware/{softwareId}")
+    public ResponseEntity<ApiResponse> deleteSoftware(@PathVariable("softwareId") Long softwareId) {
+        ApiResponse apiResponse = null;
+        int statusCode = 0;
+        Boolean userResponse = null;
+        try {
+           Optional<Softwares> softwares = softwareService.getSoftwareDetailsById(softwareId);
+            userResponse = softwareService.deleteSoftware(softwares.get());
+            statusCode = HttpStatus.OK.value();
+            apiResponse = new ApiResponse(statusCode, "Success", userResponse);
+            return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            apiResponse = new ApiResponse(statusCode, "Failed:"+e, userResponse);
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/getAllSoftware")
+    public ResponseEntity<ApiResponse> getAllSoftware() {
+        ApiResponse apiResponse = null;
+        List<Softwares> softwares = null;
+        int statusCode = 0;
+       try {
+            softwares = softwareService.getAllSoftwares();
+            statusCode = HttpStatus.OK.value();
+            apiResponse = new ApiResponse(statusCode, "Success", softwares);
+            return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            apiResponse = new ApiResponse(statusCode, "Failed:"+e, softwares);
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/getSoftwareDetailsById/{softwareId}")
+    public ResponseEntity<ApiResponse> getSoftwareDetailsById(@PathVariable("softwareId") Long softwareId) {
+        ApiResponse apiResponse = null;
+        Optional<Softwares> softwares = null;
+        int statusCode = 0;
+        try {
+            softwares = softwareService.getSoftwareDetailsById(softwareId);
+            statusCode = HttpStatus.OK.value();
+            apiResponse = new ApiResponse(statusCode, "Success", softwares.get());
+            return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            apiResponse = new ApiResponse(statusCode, "Failed:"+e, softwares.get());
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
