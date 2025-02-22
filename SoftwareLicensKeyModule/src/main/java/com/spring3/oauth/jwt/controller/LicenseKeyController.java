@@ -1,0 +1,96 @@
+package com.spring3.oauth.jwt.controller;
+
+
+import com.spring3.oauth.jwt.dto.AddLicenseKeyRequst;
+import com.spring3.oauth.jwt.model.LicenseKey;
+import com.spring3.oauth.jwt.dto.ApiResponse;
+import com.spring3.oauth.jwt.services.LicenseKeyService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/v1/licensekey")
+public class LicenseKeyController {
+    @Autowired
+    LicenseKeyService licenseKeyService;
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/addLicenseKey")
+    public ResponseEntity<ApiResponse> saveSoftware(@RequestBody AddLicenseKeyRequst lkr) {
+        ApiResponse apiResponse = null;
+        int statusCode = 0;
+        LicenseKey userResponse = null;
+        try {
+            LicenseKey licenseKey = new LicenseKey(0, lkr.getKeyName(), lkr.getKeyDuration(), lkr.getKeyPrice());
+            userResponse = licenseKeyService.addLicense(licenseKey);
+            statusCode = HttpStatus.OK.value();
+            apiResponse = new ApiResponse(statusCode, "Success", userResponse);
+            return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            apiResponse = new ApiResponse(statusCode, "Failed:"+e, userResponse);
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/deleteLicenseKey/{licenseKeyId}")
+    public ResponseEntity<ApiResponse> deleteLicenseKey(@PathVariable("licenseKeyId") Long licenseKeyId) {
+        ApiResponse apiResponse = null;
+        int statusCode = 0;
+        Boolean userResponse = null;
+        try {
+            Optional<LicenseKey> licenseKey = licenseKeyService.getLicenseDetailsById(licenseKeyId);
+            userResponse = licenseKeyService.deleteLicense(licenseKey.get());
+            statusCode = HttpStatus.OK.value();
+            apiResponse = new ApiResponse(statusCode, "Success", userResponse);
+            return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            apiResponse = new ApiResponse(statusCode, "Failed:"+e, userResponse);
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/getAllLicenseKey")
+    public ResponseEntity<ApiResponse> getAllLicenseKey() {
+        ApiResponse apiResponse = null;
+        List<LicenseKey> licenseKeys = null;
+        int statusCode = 0;
+        try {
+            licenseKeys = licenseKeyService.getAllLicense();
+            statusCode = HttpStatus.OK.value();
+            apiResponse = new ApiResponse(statusCode, "Success", licenseKeys);
+            return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            apiResponse = new ApiResponse(statusCode, "Failed:"+e, licenseKeys);
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/getLicenseKeyDetailsById/{licenseKeyId}")
+    public ResponseEntity<ApiResponse> getLicenseKeyDetailsById(@PathVariable("licenseKeyId") Long licenseKeyId) {
+        ApiResponse apiResponse = null;
+        Optional<LicenseKey> licenseKey = null;
+        int statusCode = 0;
+        try {
+            licenseKey = licenseKeyService.getLicenseDetailsById(licenseKeyId);
+            statusCode = HttpStatus.OK.value();
+            apiResponse = new ApiResponse(statusCode, "Success", licenseKey.get());
+            return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            apiResponse = new ApiResponse(statusCode, "Failed:"+e, licenseKey.get());
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+}

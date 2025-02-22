@@ -1,6 +1,7 @@
 package com.spring3.oauth.jwt;
 
 //import com.spring3.oauth.jwt.helpers.RefreshableCRUDRepositoryImpl;
+import com.spring3.oauth.jwt.helpers.RefreshableCRUDRepositoryImpl;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -9,7 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-//@EnableJpaRepositories(repositoryBaseClass = RefreshableCRUDRepositoryImpl.class)
+@EnableJpaRepositories(repositoryBaseClass = RefreshableCRUDRepositoryImpl.class)
 @SpringBootApplication
 @OpenAPIDefinition(
         info = @Info(
@@ -27,9 +28,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         )
 )
 public class OauthJwtApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(OauthJwtApplication.class, args);
     }
-
 }

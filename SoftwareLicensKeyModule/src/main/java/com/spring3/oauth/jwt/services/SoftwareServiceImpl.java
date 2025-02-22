@@ -1,7 +1,7 @@
 package com.spring3.oauth.jwt.services;
 
-import com.spring3.oauth.jwt.models.Softwares;
-import com.spring3.oauth.jwt.repositories.SoftwareRepository;
+import com.spring3.oauth.jwt.repository.SoftwareRepository;
+import com.spring3.oauth.jwt.model.Softwares;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SoftwareServiceImpl implements  SoftwareService{
+public class SoftwareServiceImpl implements SoftwareService {
 
     @Autowired
     SoftwareRepository softwareRepository;

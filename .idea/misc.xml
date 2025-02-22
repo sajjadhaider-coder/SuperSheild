@@ -12,6 +12,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/ProxyModule/pom.xml" />
+        <option value="$PROJECT_DIR$/SoftwareLicenseKeyModule/pom.xml" />
         <option value="$PROJECT_DIR$/User/pom.xml" />
         <option value="$PROJECT_DIR$/UserService/pom.xml" />
         <option value="$PROJECT_DIR$/app/UserModule/pom.xml" />

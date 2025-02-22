@@ -55,6 +55,8 @@ public class SecurityConfig {
                         // Secured endpoints
                         .requestMatchers("/api/v1/user/**").authenticated()
                         .requestMatchers("/api/v1/role/**").authenticated()
+                        .requestMatchers("/api/v1/softwarekey/**").authenticated()
+                        .requestMatchers("/api/v1/licensekey/**").authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

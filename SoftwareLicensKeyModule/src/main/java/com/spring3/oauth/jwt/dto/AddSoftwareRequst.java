@@ -1,7 +1,5 @@
-package com.spring3.oauth.jwt.dtos;
+package com.spring3.oauth.jwt.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.NamedEntityGraph;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
