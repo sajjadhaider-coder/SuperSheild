@@ -116,11 +116,6 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.supersheild.app.softwarekey</groupId>
-            <artifactId>SoftwareLicenseKeyModule</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>com.spring3.oauth.jwt</groupId>
             <artifactId>SoftwareLicensKeyModule</artifactId>
             <version>0.0.1-SNAPSHOT</version>
