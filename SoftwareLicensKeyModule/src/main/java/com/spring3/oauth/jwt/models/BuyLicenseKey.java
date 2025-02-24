@@ -17,12 +17,25 @@ public class BuyLicenseKey {
     @Column(name = "ID")
     private long id;
 
+    @Column(name = "userId")
     private long userId;
+
+    @Column(name = "softwareId")
     private long softwareId;
+
+    @Column(name = "softwareLicenseId")
     private long softwareLicenseId;
+
+    @Column(name = "price")
     private long price;
+
+    @Column(name = "purchaseDate")
     private LocalDateTime purchaseDate;
+
+    @Column(name = "Duration")
     private String Duration; // MONTHLY, QUARTARLY, ANUALLY
+
+    @Column(name = "expirydate")
     private LocalDateTime expirydate;
 
 }
