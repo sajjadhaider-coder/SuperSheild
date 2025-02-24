@@ -11,6 +11,7 @@ import com.spring3.oauth.jwt.repository.SoftwareRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -177,7 +178,38 @@ UserRepository userRepository;
 
     @Override
     public BuyLicenseKey buyKey(BuyLicenseKey buyLicenseKey) {
-        buyLicenseKey = buyLicenseKeyRepository.save(buyLicenseKey);
-        return buyLicenseKey;
+        Optional<Softwares> softwares = softwareRepository.findById(buyLicenseKey.getSoftwareId());
+        if (softwares.isPresent()) {
+            Long softwareLicenseId = buyLicenseKey.getSoftwareLicenseId();
+            boolean softwareLicense = false;
+            BigDecimal softwarePrice = BigDecimal.ZERO;
+            for (LicenseKey licenseKey : softwares.get().getLiceseKeys()) {
+                if (Long.valueOf(licenseKey.getId()).equals(softwareLicenseId)) {
+                    softwareLicense = true;
+                    softwarePrice = licenseKey.getKeyPrice();
+                    break; // Exit the loop once we find a match
+                }
+            }
+
+            if (softwareLicense) {
+                Optional<UserInfo> userInfo = userRepository.findById(buyLicenseKey.getUserId());
+                if (userInfo.isPresent()) {
+                    boolean result = userInfo.get().getUserBalance().compareTo(softwarePrice) == 0 ||
+                            userInfo.get().getUserBalance().compareTo(softwarePrice) > 0;
+                    if (result) {
+                        // Save and return the updated buyLicenseKey
+                        return buyLicenseKeyRepository.save(buyLicenseKey);
+                    } else {
+                        throw new RuntimeException("Your available balance is limited");
+                    }
+                } else {
+                    throw new RuntimeException("User not found");
+                }
+            } else {
+                throw new RuntimeException("License key not found for the given software.");
+            }
+        } else {
+            throw new RuntimeException("software's not found");
+        }
     }
 }

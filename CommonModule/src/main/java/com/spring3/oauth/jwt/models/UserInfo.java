@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -66,9 +67,9 @@ public class UserInfo {
     @Column(name = "PARENT_ID")
     private String parentId;
 
-  /*  @Column(name = "BALANCE")
-    private String userBalance;
-*/
+    @Column(name = "BALANCE")
+    private BigDecimal userBalance;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<UserRole> roles = new HashSet<>();
 

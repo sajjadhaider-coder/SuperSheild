@@ -66,9 +66,9 @@ public class UserInfo {
     @Column(name = "PARENT_ID")
     private String parentId;
 
-  /*  @Column(name = "BALANCE")
+    @Column(name = "BALANCE")
     private String userBalance;
-*/
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<UserRole> roles = new HashSet<>();
 

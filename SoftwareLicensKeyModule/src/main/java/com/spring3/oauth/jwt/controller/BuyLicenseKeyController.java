@@ -2,7 +2,6 @@ package com.spring3.oauth.jwt.controller;
 
 import com.spring3.oauth.jwt.dto.ApiResponse;
 import com.spring3.oauth.jwt.models.BuyLicenseKey;
-import com.spring3.oauth.jwt.models.LicenseKey;
 import com.spring3.oauth.jwt.services.BuyLicenseKeyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

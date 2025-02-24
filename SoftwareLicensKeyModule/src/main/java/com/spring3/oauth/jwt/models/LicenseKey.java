@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 
 @Entity
 @Data
@@ -27,6 +29,6 @@ public class LicenseKey {
     private String keyDuration;  // monthly, quatarly, annually
 
     @Column(name = "KEY_PRICE")
-    private String keyPrice;
+    private BigDecimal keyPrice;
 
 }
