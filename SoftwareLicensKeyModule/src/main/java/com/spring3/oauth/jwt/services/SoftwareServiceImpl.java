@@ -1,7 +1,7 @@
 package com.spring3.oauth.jwt.services;
 
 import com.spring3.oauth.jwt.repository.SoftwareRepository;
-import com.spring3.oauth.jwt.model.Softwares;
+import com.spring3.oauth.jwt.models.Softwares;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

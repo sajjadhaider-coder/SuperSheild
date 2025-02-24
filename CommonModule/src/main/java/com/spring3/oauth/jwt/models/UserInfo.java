@@ -31,8 +31,8 @@ public class UserInfo {
     /*@NotNull
     @Column(name = "VERIFICATION_CODE", length = 10)
     private String verificationCode;
-    */
-    // @JsonIgnore // Prevent password from being serialized
+*/
+   // @JsonIgnore // Prevent password from being serialized
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
@@ -54,8 +54,8 @@ public class UserInfo {
     @Column(name = "CREATED_BY")
     private String createdBy;
 
-    /*@Column(name = "USER_ID", nullable = false)
-    private int userId;
+  /*  @Column(name = "USER_ID")
+    private Long userId;
 */
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
@@ -71,7 +71,8 @@ public class UserInfo {
 */
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<UserRole> roles = new HashSet<>();
-/*
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    private Set<UserRole> licenseKey = new HashSet<>();*/
+
+    /*@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    private Set<LicenseKey> licenseKey = new HashSet<>();*/
+
 }

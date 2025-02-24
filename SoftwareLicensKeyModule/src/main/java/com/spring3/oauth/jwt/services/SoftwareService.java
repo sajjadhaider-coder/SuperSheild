@@ -1,7 +1,7 @@
 package com.spring3.oauth.jwt.services;
 
 
-import com.spring3.oauth.jwt.model.Softwares;
+import com.spring3.oauth.jwt.models.Softwares;
 
 import java.util.List;
 import java.util.Optional;

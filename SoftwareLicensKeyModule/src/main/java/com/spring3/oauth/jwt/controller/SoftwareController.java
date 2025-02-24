@@ -2,7 +2,7 @@ package com.spring3.oauth.jwt.controller;
 
 import com.spring3.oauth.jwt.dto.AddSoftwareRequst;
 import com.spring3.oauth.jwt.dto.ApiResponse;
-import com.spring3.oauth.jwt.model.Softwares;
+import com.spring3.oauth.jwt.models.Softwares;
 import com.spring3.oauth.jwt.services.SoftwareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

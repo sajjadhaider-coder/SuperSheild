@@ -72,4 +72,6 @@ public class UserInfo {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<UserRole> roles = new HashSet<>();
 
+    /*@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    private Set<UserRole> licenseKey = new HashSet<>();*/
 }

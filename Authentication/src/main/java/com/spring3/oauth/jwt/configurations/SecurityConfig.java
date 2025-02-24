@@ -57,6 +57,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/role/**").authenticated()
                         .requestMatchers("/api/v1/softwarekey/**").authenticated()
                         .requestMatchers("/api/v1/licensekey/**").authenticated()
+                        .requestMatchers("/api/v1/software/**").authenticated()
                         .requestMatchers("/api/v1/license-keys/**").authenticated()
                 )
                 .sessionManagement(session -> session

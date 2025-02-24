@@ -1,4 +1,4 @@
-package com.spring3.oauth.jwt.model;
+package com.spring3.oauth.jwt.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

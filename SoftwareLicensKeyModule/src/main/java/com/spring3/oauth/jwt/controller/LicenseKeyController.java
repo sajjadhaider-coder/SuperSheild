@@ -2,8 +2,11 @@ package com.spring3.oauth.jwt.controller;
 
 
 import com.spring3.oauth.jwt.dto.AddLicenseKeyRequst;
-import com.spring3.oauth.jwt.model.LicenseKey;
+import com.spring3.oauth.jwt.models.BuyLicenseKey;
+import com.spring3.oauth.jwt.models.LicenseKey;
 import com.spring3.oauth.jwt.dto.ApiResponse;
+import com.spring3.oauth.jwt.models.Softwares;
+import com.spring3.oauth.jwt.models.UserInfo;
 import com.spring3.oauth.jwt.services.LicenseKeyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +42,43 @@ public class LicenseKeyController {
         }
     }
 
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/assignKey")
+    public ResponseEntity<ApiResponse> assignKey(@RequestParam List<String> keyIds, @RequestParam String softwareId) {
+        ApiResponse apiResponse = null;
+        int statusCode = 0;
+        Softwares userResponse = null;
+        try {
+           // LicenseKey licenseKey = new LicenseKey(0, lkr.getKeyName(), lkr.getKeyDuration(), lkr.getKeyPrice());
+            userResponse = licenseKeyService.assignKey(keyIds, softwareId);
+            statusCode = HttpStatus.OK.value();
+            apiResponse = new ApiResponse(statusCode, "Success", userResponse);
+            return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            apiResponse = new ApiResponse(statusCode, "Failed:"+e, userResponse);
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/buyKey")
+    public ResponseEntity<ApiResponse> buyKey(@RequestBody BuyLicenseKey buyLicenseKey) {
+        ApiResponse apiResponse = null;
+        int statusCode = 0;
+        BuyLicenseKey buyLicenseKey1 = null;
+        try {
+            buyLicenseKey1 = licenseKeyService.buyKey(buyLicenseKey);
+            statusCode = HttpStatus.OK.value();
+            apiResponse = new ApiResponse(statusCode, "Success", buyLicenseKey1);
+            return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            apiResponse = new ApiResponse(statusCode, "Failed:"+e, buyLicenseKey1);
+            return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/deleteLicenseKey/{licenseKeyId}")
     public ResponseEntity<ApiResponse> deleteLicenseKey(@PathVariable("licenseKeyId") Long licenseKeyId) {
